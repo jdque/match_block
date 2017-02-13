@@ -1,7 +1,7 @@
 package com.matchblock.engine;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class State {
     public void update(float delta) {}
@@ -39,8 +39,8 @@ public abstract class State {
     }
 
     public static class Context {
-        private HashMap<Object, State> stateMap;
-        private HashMap<Object, Runnable> transitionMap;
+        private Map<Object, State> stateMap;
+        private Map<Object, Runnable> transitionMap;
         private State nullState;
         private Object currentId;
         private State currentState;

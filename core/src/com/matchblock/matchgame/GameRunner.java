@@ -2,8 +2,6 @@ package com.matchblock.matchgame;
 
 import com.badlogic.gdx.math.Vector2;
 import com.matchblock.engine.*;
-import com.matchblock.engine.Piece;
-import com.matchblock.engine.Point;
 
 import java.util.List;
 

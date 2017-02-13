@@ -91,8 +91,6 @@ public class ColoredBlock extends Block {
         else if (typeStr.equals("6"))
             type = Type.MAGENTA;
 
-        ColoredBlock block = new ColoredBlock(type);
-
-        return block;
+        return new ColoredBlock(type);
     }
 }

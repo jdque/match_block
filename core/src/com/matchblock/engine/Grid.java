@@ -2,7 +2,6 @@ package com.matchblock.engine;
 
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.BitSet;
 import java.util.Iterator;
 
 public class Grid<T extends Block> {
@@ -96,19 +95,6 @@ public class Grid<T extends Block> {
             }
         };
     }
-
-    /*public BitSet toBitSet(Block.State onState) {
-        BitSet bitSet = new BitSet();
-        for (int iy = top; iy <= bottom; iy++) {
-            for (int ix = left; ix <= right; ix++) {
-                if (getBlock(ix, iy).state == onState) {
-                    bitSet.set(iy * width + ix, true);
-                }
-            }
-        }
-
-        return bitSet;
-    }*/
 
     public boolean overlaps(Grid<T> grid) {
         for (int iy = top; iy <= bottom; iy++) {

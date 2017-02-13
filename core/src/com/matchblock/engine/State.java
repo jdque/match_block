@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class State {
-    public void update(float delta) {};
-    public void enter(Object previous) {};
-    public void exit(Object next) {};
+    public void update(float delta) {}
+    public void enter(Object previous) {}
+    public void exit(Object next) {}
 
     public static class Transition {
         public final Object from;
@@ -48,7 +48,7 @@ public abstract class State {
         private TransitionHandler currentTransitionHandler;
 
         public Context() {
-            this.stateMap = new HashMap();
+            this.stateMap = new HashMap<Object, State>();
             this.nullState = new State() {};
             this.currentId = null;
             this.currentState = nullState;

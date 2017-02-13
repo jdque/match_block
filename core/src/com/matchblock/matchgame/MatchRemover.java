@@ -1,6 +1,7 @@
 package com.matchblock.matchgame;
 
 import com.matchblock.engine.Block;
+import com.matchblock.engine.ColoredBlock;
 import com.matchblock.engine.Grid;
 import com.matchblock.engine.Point;
 
@@ -11,10 +12,10 @@ import java.util.List;
 import java.util.Queue;
 
 public class MatchRemover {
-    public static List<List<Point>> getTypeGroups(Grid grid, int minCount) {
-        List<List<Point>> groups = new ArrayList<List<Point>>();
-        HashSet<Point> visited = new HashSet<Point>();
-        Queue<Point> next = new LinkedList<Point>();
+    public static List<List<Point>> getTypeGroups(Grid<ColoredBlock> grid, int minCount) {
+        List<List<Point>> groups = new ArrayList<>();
+        HashSet<Point> visited = new HashSet<>();
+        Queue<Point> next = new LinkedList<>();
 
         for (int iy = grid.bottom; iy >= grid.top; iy--) {
             for (int ix = grid.left; ix <= grid.right; ix++) {
@@ -22,7 +23,7 @@ public class MatchRemover {
                 if (visited.contains(new Point(ix, iy)) || seedBlock.isEmpty())
                     continue;
 
-                List<Point> group = new ArrayList<Point>();
+                List<Point> group = new ArrayList<>();
                 next.clear();
                 next.add(new Point(ix, iy));
                 while (!next.isEmpty()) {

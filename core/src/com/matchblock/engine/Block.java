@@ -1,59 +1,52 @@
 package com.matchblock.engine;
 
-public class Block {
-    public enum State {
-        EMPTY, FILLED
+public abstract class Block {
+    protected Block() {
     }
 
-    protected final State state;
-    protected final Object type;
+    public abstract Block clone();
 
-    protected Block(State state, Object type) {
-        this.state = state;
-        if (type == null) {
-            this.type = new NoneType();
-        }
-        else {
-            this.type = type;
-        }
-    }
+    public abstract boolean isEmpty();
 
-    public Block clone() {
-        return new Block(this.state, this.type);
-    }
-
-    public boolean isEmpty() {
-        return state == State.EMPTY;
-    }
-
-    public Object getType() {
-        return type;
-    }
-
-    public boolean hasType() {
-        return type == type;
-    }
-
-    public boolean matches(Block block) {
-        return this.type == block.type;
-    }
-
-    private static class NoneType {
-        @Override
-        public boolean equals(Object otherType) {
-            return false;
-        }
-    }
+    public abstract boolean matches(Block other);
 
     public static class FilledBlock extends Block {
         public FilledBlock() {
-            super(Block.State.FILLED, new NoneType());
+        }
+
+        @Override
+        public Block clone() {
+            return new FilledBlock();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean matches(Block other) {
+            return !other.isEmpty();
         }
     }
 
     public static class EmptyBlock extends Block {
         public EmptyBlock() {
-            super(Block.State.EMPTY, new NoneType());
+        }
+
+        @Override
+        public Block clone() {
+            return new EmptyBlock();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+
+        @Override
+        public boolean matches(Block other) {
+            return other.isEmpty();
         }
     }
 }

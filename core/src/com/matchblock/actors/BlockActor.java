@@ -5,12 +5,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.matchblock.engine.Block;
+import com.matchblock.engine.ColoredBlock;
 
 public class BlockActor extends Actor {
-    public final Block block;
+    public final ColoredBlock block;
     private ShapeRenderer shapeRenderer;
 
-    public BlockActor(Block block, ShapeRenderer shapeRenderer) {
+    public BlockActor(ColoredBlock block, ShapeRenderer shapeRenderer) {
         this.block = block.clone();
         this.shapeRenderer = shapeRenderer;
     }

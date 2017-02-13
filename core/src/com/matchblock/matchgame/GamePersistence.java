@@ -16,22 +16,22 @@ public class GamePersistence {
             data = new JSONObject();
         }
 
-        public Saver savePiece(Piece piece, String key) throws JSONException {
+        public Saver savePiece(Piece<ColoredBlock> piece, String key) throws JSONException {
             JSONObject pieceObj = new JSONObject();
             pieceObj.put("x", piece.gridX);
             pieceObj.put("y", piece.gridY);
             String activePieceBlocks =
                     piece.getBlock(0, 0).toString() +
-                            piece.getBlock(1, 0).toString() +
-                            piece.getBlock(0, 1).toString() +
-                            piece.getBlock(1, 1).toString();
+                    piece.getBlock(1, 0).toString() +
+                    piece.getBlock(0, 1).toString() +
+                    piece.getBlock(1, 1).toString();
             pieceObj.put("blocks", activePieceBlocks);
             data.put(key, pieceObj);
 
             return this;
         }
 
-        public Saver saveGrid(Grid grid, String key)  throws JSONException {
+        public Saver saveGrid(Grid<ColoredBlock> grid, String key)  throws JSONException {
             JSONObject gridObj = new JSONObject();
             StringBuilder builder = new StringBuilder();
             for (int iy = 0; iy < grid.height; iy++) {
@@ -69,15 +69,13 @@ public class GamePersistence {
             data = new JSONObject(handle.readString());
         }
 
-        public Piece getPiece(String key) throws JSONException {
-            Piece piece = null;
-
+        public Piece<ColoredBlock> getPiece(String key) throws JSONException {
             JSONObject pieceObj = data.getJSONObject(key);
             String blocks = pieceObj.getString("blocks");
             int x = pieceObj.getInt("x");
             int y = pieceObj.getInt("y");
             float speed = (float)pieceObj.getDouble("speed");
-            piece = new Piece(2);
+            Piece<ColoredBlock> piece = new Piece<>(2, new ColoredBlock(ColoredBlock.Type.NONE));
             piece.setPosition(x, y);
             piece.setBlock(ColoredBlock.fromString(Character.toString(blocks.charAt(0))), 0, 0);
             piece.setBlock(ColoredBlock.fromString(Character.toString(blocks.charAt(1))), 1, 0);
@@ -87,7 +85,7 @@ public class GamePersistence {
             return piece;
         }
 
-        public void getGridBlocks(String key, Grid outGrid) throws JSONException {
+        public void getGridBlocks(String key, Grid<ColoredBlock> outGrid) throws JSONException {
             JSONObject gridObj = data.getJSONObject(key);
             String[] rows = gridObj.getString("blocks").split(",");
             for (int iy = 0; iy < outGrid.height; iy++) {

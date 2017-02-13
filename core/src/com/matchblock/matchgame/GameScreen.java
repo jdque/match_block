@@ -7,7 +7,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -28,10 +27,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.matchblock.actors.BlockActor;
 import com.matchblock.actors.PieceActor;
 import com.matchblock.actors.GridActor;
-import com.matchblock.engine.CellRef;
-import com.matchblock.engine.ColoredBlock;
-import com.matchblock.engine.Grid;
-import com.matchblock.engine.State;
+import com.matchblock.engine.*;
 import com.matchblock.ui.MenuScreen;
 import com.matchblock.ui.GameOverGroup;
 
@@ -173,7 +169,7 @@ public class GameScreen implements Screen {
     }
 
     private GameRunner createNewGame() {
-        Grid grid = new Grid(10, 15);
+        Grid<ColoredBlock> grid = new Grid<>(10, 15, new ColoredBlock(ColoredBlock.Type.NONE));
 
         Logic.Score scoreLogic = new Logic.Score();
         scoreLogic.configure(4, 10, 5, 20, 2.0f);
@@ -197,7 +193,7 @@ public class GameScreen implements Screen {
         GameRunner gameRunner = null;
 
         try {
-            Grid grid = new Grid(10, 15);
+            Grid<ColoredBlock> grid = new Grid<>(10, 15, new ColoredBlock(ColoredBlock.Type.NONE));
             Logic.Score scoreLogic = new Logic.Score();
             scoreLogic.configure(4, 10, 5, 20, 2.0f);
             Logic.Speed speedLogic = new Logic.Speed();
@@ -210,8 +206,8 @@ public class GameScreen implements Screen {
             loader.getScore("logic", scoreLogic);
             loader.getSpeed("logic", speedLogic);
             loader.getGridBlocks("grid", grid);
-            Piece activePiece = loader.getPiece("activePiece");
-            Piece nextPiece = loader.getPiece("nextPiece");
+            Piece<ColoredBlock> activePiece = loader.getPiece("activePiece");
+            Piece<ColoredBlock> nextPiece = loader.getPiece("nextPiece");
 
             gameRunner = new GameRunner(grid, scoreLogic, speedLogic);
             gameRunner.continueDrop(activePiece, nextPiece);
@@ -333,15 +329,15 @@ public class GameScreen implements Screen {
             });
 
             this.gameRunner.setEventHandler(new GameRunner.EventHandler() {
-                void onActivePieceSpawned(Piece activePiece) {
+                void onActivePieceSpawned(Piece<ColoredBlock> activePiece) {
                     setActivePiece(activePiece);
                 }
 
-                void onNextPieceSpawned(Piece nextPiece) {
+                void onNextPieceSpawned(Piece<ColoredBlock> nextPiece) {
                     setNextPiece(nextPiece);
                 }
 
-                void onActivePieceMove(Piece activePiece, int dx, int dy, float speedMul) {
+                void onActivePieceMove(Piece<ColoredBlock> activePiece, int dx, int dy, float speedMul) {
                     float cellWidth = gridActor.getCellWidth();
                     float cellHeight = gridActor.getCellHeight();
 
@@ -364,7 +360,7 @@ public class GameScreen implements Screen {
                     removeActor(activePieceActor);
                 }
 
-                void onBlockClear(final CellRef ref) {
+                void onBlockClear(final CellRef<ColoredBlock> ref) {
                     float cellWidth = gridActor.getCellWidth();
                     float cellHeight = gridActor.getCellHeight();
 
@@ -390,7 +386,7 @@ public class GameScreen implements Screen {
                     actionManager.addBlockingAction(clearAction);
                 }
 
-                void onBlockMove(final CellRef fromRef, final CellRef toRef, float speedMul) {
+                void onBlockMove(final CellRef<ColoredBlock> fromRef, final CellRef<ColoredBlock> toRef, float speedMul) {
                     float cellWidth = gridActor.getCellWidth();
                     float cellHeight = gridActor.getCellHeight();
 
@@ -429,7 +425,7 @@ public class GameScreen implements Screen {
             setNextPiece(this.gameRunner.nextPiece);
         }
 
-        private void setGrid(Grid grid) {
+        private void setGrid(Grid<ColoredBlock> grid) {
             if (gridActor != null) {
                 gridActor.clear();
                 this.removeActor(gridActor);
@@ -441,7 +437,7 @@ public class GameScreen implements Screen {
             this.addActor(gridActor);
         }
 
-        private void setActivePiece(Piece piece) {
+        private void setActivePiece(Piece<ColoredBlock> piece) {
             if (activePieceActor != null) {
                 activePieceActor.clear();
                 this.removeActor(activePieceActor);
@@ -463,7 +459,7 @@ public class GameScreen implements Screen {
             activePieceActor.toFront();
         }
 
-        private void setNextPiece(Piece piece) {
+        private void setNextPiece(Piece<ColoredBlock> piece) {
             if (nextPieceActor != null) {
                 nextPieceActor.clear();
                 this.removeActor(nextPieceActor);

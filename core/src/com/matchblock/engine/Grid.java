@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.BitSet;
 import java.util.Iterator;
 
-public class Grid {
+public class Grid<T extends Block> {
     public enum ShiftDirection {
         UP,
         DOWN,
@@ -13,35 +13,37 @@ public class Grid {
         RIGHT
     }
 
-    protected Block[][] blocks;
+    protected T[][] blocks;
+    protected T emptyBlock;
     public final int width, height, top, bottom, left, right;
 
-    public Grid(int width, int height) {
+    public Grid(int width, int height, T emptyBlock) {
         this.width = width;
         this.height = height;
         this.top = 0;
         this.bottom = this.height - 1;
         this.left = 0;
         this.right = this.width - 1;
-        this.blocks = new Block[height][width];
+        this.blocks = (T[][]) new Block[height][width];
+        this.emptyBlock = emptyBlock;
 
         for (int iy = 0; iy < this.height; iy++) {
             for (int ix = 0; ix < this.width; ix++) {
-                this.blocks[iy][ix] = new Block.EmptyBlock();
+                this.blocks[iy][ix] = (T) emptyBlock.clone();
             }
         }
     }
 
-    public Block getBlock(int x, int y) {
+    public T getBlock(int x, int y) {
         return blocks[y][x];
     }
 
-    public void setBlock(Block block, int x, int y) {
+    public void setBlock(T block, int x, int y) {
         blocks[y][x] = block;
     }
 
     public void clearBlock(int x, int y) {
-        blocks[y][x] = new Block.EmptyBlock();
+        blocks[y][x] = (T) emptyBlock.clone();
     }
 
     public void moveBlock(int fromX, int fromY, int toX, int toY) {
@@ -52,8 +54,8 @@ public class Grid {
         clearBlock(fromX, fromY);
     }
 
-    public Grid getSubGrid(int x, int y, int width, int height) {
-        Grid subGrid = new Grid(width, height);
+    public Grid<T> getSubGrid(int x, int y, int width, int height) {
+        Grid<T> subGrid = new Grid<>(width, height, emptyBlock);
         for (int iy = 0; iy < height; iy++) {
             if (y + iy > bottom)
                 break;
@@ -68,21 +70,21 @@ public class Grid {
         return subGrid;
     }
 
-    public Iterable<CellRef> getRow(int rowIdx) {
-        final Grid self = this;
+    public Iterable<CellRef<T>> getRow(int rowIdx) {
+        final Grid<T> self = this;
         final int y = rowIdx;
-        final Block[] row = blocks[y];
-        return new Iterable<CellRef>() {
-            @Override public Iterator<CellRef> iterator() {
-                return new Iterator<CellRef>() {
+        final T[] row = blocks[y];
+        return new Iterable<CellRef<T>>() {
+            @Override public Iterator<CellRef<T>> iterator() {
+                return new Iterator<CellRef<T>>() {
                     int x = 0;
-                    CellRef cellRef = new CellRef(self, 0, 0);
+                    CellRef<T> cellRef = new CellRef<>(self, 0, 0);
 
                     @Override public boolean hasNext() {
                         return x < width;
                     }
 
-                    @Override public CellRef next() {
+                    @Override public CellRef<T> next() {
                         cellRef.moveTo(x, y);
                         return cellRef;
                     }
@@ -95,7 +97,7 @@ public class Grid {
         };
     }
 
-    public BitSet toBitSet(Block.State onState) {
+    /*public BitSet toBitSet(Block.State onState) {
         BitSet bitSet = new BitSet();
         for (int iy = top; iy <= bottom; iy++) {
             for (int ix = left; ix <= right; ix++) {
@@ -106,9 +108,9 @@ public class Grid {
         }
 
         return bitSet;
-    }
+    }*/
 
-    public boolean overlaps(Grid grid) {
+    public boolean overlaps(Grid<T> grid) {
         for (int iy = top; iy <= bottom; iy++) {
             for (int ix = left; ix <= right; ix++) {
                 if (!getBlock(ix, iy).isEmpty() && !grid.getBlock(ix, iy).isEmpty())
@@ -119,7 +121,7 @@ public class Grid {
         return false;
     }
 
-    public void joinBlocks(Block[][] blocks, int x, int y) {
+    public void joinBlocks(T[][] blocks, int x, int y) {
         if (blocks == null || blocks.length == 0) {
             return;
         }
@@ -138,7 +140,7 @@ public class Grid {
         }
     }
 
-    public void joinGrid(Grid grid, int x, int y) {
+    public void joinGrid(Grid<T> grid, int x, int y) {
         if (grid == null) {
             return;
         }

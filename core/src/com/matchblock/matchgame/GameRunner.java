@@ -1,22 +1,20 @@
 package com.matchblock.matchgame;
 
 import com.badlogic.gdx.math.Vector2;
-import com.matchblock.engine.CellRef;
-import com.matchblock.engine.Grid;
+import com.matchblock.engine.*;
 import com.matchblock.engine.Point;
-import com.matchblock.engine.State;
-import com.matchblock.engine.TimeInterval;
 
+import java.awt.*;
 import java.util.List;
 
 public class GameRunner {
     public abstract static class EventHandler {
-        void onActivePieceSpawned(Piece activePiece) {};
-        void onNextPieceSpawned(Piece nextPiece) {};
-        void onActivePieceRemoved() {};
-        void onActivePieceMove(Piece activePiece, int dx, int dy, float speedMul) {};
-        void onBlockClear(CellRef ref) {};
-        void onBlockMove(CellRef fromRef, CellRef toRef, float speedMul) {};
+        void onActivePieceSpawned(Piece<ColoredBlock> activePiece) {}
+        void onNextPieceSpawned(Piece<ColoredBlock> nextPiece) {}
+        void onActivePieceRemoved() {}
+        void onActivePieceMove(Piece<ColoredBlock> activePiece, int dx, int dy, float speedMul) {}
+        void onBlockClear(CellRef<ColoredBlock> ref) {}
+        void onBlockMove(CellRef<ColoredBlock> fromRef, CellRef<ColoredBlock> toRef, float speedMul) {}
     }
 
     public enum GameState {
@@ -32,9 +30,9 @@ public class GameRunner {
 
     private EventHandler eventHandler;
 
-    public Grid grid;
-    public Piece activePiece;
-    public Piece nextPiece;
+    public Grid<ColoredBlock> grid;
+    public Piece<ColoredBlock> activePiece;
+    public Piece<ColoredBlock> nextPiece;
 
     public Logic.Score scoreLogic;
     public Logic.Speed speedLogic;
@@ -81,8 +79,8 @@ public class GameRunner {
                     if (shiftVectors[iy].y == 0)
                         continue;
 
-                    CellRef fromRef = new CellRef(grid, ix, iy);
-                    CellRef toRef = new CellRef(grid, ix + (int)shiftVectors[ix].x, iy + (int)shiftVectors[iy].y);
+                    CellRef<ColoredBlock> fromRef = new CellRef<>(grid, ix, iy);
+                    CellRef<ColoredBlock> toRef = new CellRef<>(grid, ix + (int)shiftVectors[ix].x, iy + (int)shiftVectors[iy].y);
                     eventHandler.onBlockMove(fromRef, toRef, 1.0f);
                 }
             }
@@ -118,7 +116,7 @@ public class GameRunner {
                 if (groups.size() > 0) {
                     for (List<Point> group : groups) {
                         for (Point point : group) {
-                            CellRef ref = new CellRef(grid, point.x, point.y);
+                            CellRef<ColoredBlock> ref = new CellRef<>(grid, point.x, point.y);
                             eventHandler.onBlockClear(ref);
                         }
                     }
@@ -156,8 +154,8 @@ public class GameRunner {
                         if (shiftVectors[iy].y == 0)
                             continue;
 
-                        CellRef fromRef = new CellRef(grid, ix, iy);
-                        CellRef toRef = new CellRef(grid, ix + (int) shiftVectors[ix].x, iy + (int) shiftVectors[iy].y);
+                        CellRef<ColoredBlock> fromRef = new CellRef<>(grid, ix, iy);
+                        CellRef<ColoredBlock> toRef = new CellRef<>(grid, ix + (int) shiftVectors[ix].x, iy + (int) shiftVectors[iy].y);
                         eventHandler.onBlockMove(fromRef, toRef, 4.0f);
                     }
                 }
@@ -166,7 +164,7 @@ public class GameRunner {
         }
     }
 
-    public GameRunner(Grid grid, Logic.Score scoreLogic, Logic.Speed speedLogic) {
+    public GameRunner(Grid<ColoredBlock> grid, Logic.Score scoreLogic, Logic.Speed speedLogic) {
         this.grid = grid;
         this.scoreLogic = scoreLogic;
         this.speedLogic = speedLogic;
@@ -197,7 +195,7 @@ public class GameRunner {
         stateContext.set(GameState.DROPPING);
     }
 
-    public void continueDrop(Piece activePiece, Piece nextPiece) {
+    public void continueDrop(Piece<ColoredBlock> activePiece, Piece<ColoredBlock> nextPiece) {
         this.activePiece = activePiece;
         this.nextPiece = nextPiece;
         stateContext.set(GameState.DROPPING);
@@ -213,7 +211,7 @@ public class GameRunner {
         if (nextPiece == null) {
             activePiece = gen.generate();
         } else {
-            activePiece = new Piece(2);
+            activePiece = new Piece<ColoredBlock>(2, new ColoredBlock(ColoredBlock.Type.NONE));
             activePiece.joinGrid(nextPiece, 0, 0);
         }
         activePiece.setPosition(4, 0);

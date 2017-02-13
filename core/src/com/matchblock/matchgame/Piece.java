@@ -7,7 +7,7 @@ import com.matchblock.engine.Grid;
 
 import java.util.Random;
 
-public class Piece extends Grid {
+public class Piece<T extends Block> extends Grid<T> {
     public static class Generator {
         private float[] freqs;
 
@@ -23,7 +23,7 @@ public class Piece extends Grid {
             freqs[3] = one + two + three + four;
         }
 
-        public Piece generate() {
+        public Piece<ColoredBlock> generate() {
             //Get type count from frequency distribution
             Random rand = new Random();
             float typeCountFreq = rand.nextFloat();
@@ -52,7 +52,7 @@ public class Piece extends Grid {
             }
 
             //Randomize block type positioning
-            Block[] blocks = new Block[4];
+            ColoredBlock[] blocks = new ColoredBlock[4];
             int typeCounter = 1;
             for (int i = 0; i < 4; i++) {
                 blocks[i] = new ColoredBlock(blockTypes[typeCounter - 1]);
@@ -62,12 +62,12 @@ public class Piece extends Grid {
             }
             for (int i = 3; i > 0; i--) {
                 int j = rand.nextInt(i+1);
-                Block temp = blocks[j];
+                ColoredBlock temp = blocks[j];
                 blocks[j] = blocks[i];
                 blocks[i] = temp;
             }
 
-            Piece group = new Piece(2);
+            Piece<ColoredBlock> group = new Piece<>(2, new ColoredBlock(ColoredBlock.Type.NONE));
             group.setBlock(blocks[0], 0, 0);
             group.setBlock(blocks[1], 0, 1);
             group.setBlock(blocks[2], 1, 0);
@@ -79,8 +79,8 @@ public class Piece extends Grid {
 
     public int size, gridX, gridY;
 
-    public Piece(int size) {
-        super(size, size);
+    public Piece(int size, T emptyBlock) {
+        super(size, size, emptyBlock);
         this.size = size;
         this.gridX = 0;
         this.gridY = 0;
@@ -107,7 +107,7 @@ public class Piece extends Grid {
         int n = size;
         for (int x = 0; x < n - 1; x++) {
             for (int y = x + 1; y < n; y++) {
-                Block temp = blocks[x][y];
+                T temp = blocks[x][y];
                 blocks[x][y] = blocks[y][x];
                 blocks[y][x] = temp;
             }
@@ -120,7 +120,7 @@ public class Piece extends Grid {
         int n = size;
         for (int y = 0; y < n; y++) {
             for (int x = 0; x < n / 2; x++) {
-                Block temp = blocks[x][y];
+                T temp = blocks[x][y];
                 blocks[x][y] = blocks[n-1-x][y];
                 blocks[n-1-x][y] = temp;
             }
@@ -133,14 +133,14 @@ public class Piece extends Grid {
         int n = size;
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n / 2; y++) {
-                Block temp = blocks[x][y];
+                T temp = blocks[x][y];
                 blocks[x][y] = blocks[x][n-1-y];
                 blocks[x][n-1-y] = temp;
             }
         }
     }
 
-    public boolean collidesLeft(Grid grid) {
+    public boolean collidesLeft(Grid<T> grid) {
         if (gridX <= grid.left)
             return true;
 
@@ -155,7 +155,7 @@ public class Piece extends Grid {
         return false;
     }
 
-    public boolean collidesRight(Grid grid) {
+    public boolean collidesRight(Grid<T> grid) {
         if (gridX + width - 1 >= grid.right)
             return true;
 
@@ -170,7 +170,7 @@ public class Piece extends Grid {
         return false;
     }
 
-    public boolean collidesDown(Grid grid) {
+    public boolean collidesDown(Grid<T> grid) {
         if (gridY + height - 1 >= grid.bottom)
             return true;
 

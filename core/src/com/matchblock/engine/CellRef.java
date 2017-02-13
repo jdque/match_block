@@ -1,20 +1,20 @@
 package com.matchblock.engine;
 
-public class CellRef {
-    private Grid grid;
+public class CellRef<T extends Block> {
+    private Grid<T> grid;
     private int gridX, gridY;
 
-    public CellRef(Grid grid, int x, int y) {
+    public CellRef(Grid<T> grid, int x, int y) {
         this.grid = grid;
         this.gridX = x;
         this.gridY = y;
     }
 
-    public Block getTarget() {
+    public T getTarget() {
         return grid.getBlock(gridX, gridY);
     }
 
-    public void setTarget(Block block) {
+    public void setTarget(T block) {
         grid.setBlock(block, gridX, gridY);
     }
 

@@ -4,19 +4,37 @@ import com.badlogic.gdx.graphics.Color;
 
 public class ColoredBlock extends Block {
     public enum Type {
-        RED, BLUE, GREEN, PURPLE, ORANGE, MAGENTA
+        NONE, RED, BLUE, GREEN, PURPLE, ORANGE, MAGENTA
     }
+
+    private final Type type;
 
     public ColoredBlock(Type type) {
-        super(Block.State.FILLED, type);
+        this.type = type;
     }
 
-    public static Color getBlockColor(Block block) {
-        if (block == null || !block.hasType()) {
+    @Override
+    public ColoredBlock clone() {
+        return new ColoredBlock(this.type);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.type == Type.NONE;
+    }
+
+    @Override
+    public boolean matches(Block other) {
+        ColoredBlock coloredOther = (ColoredBlock) other;
+        return coloredOther != null && coloredOther.type == this.type;
+    }
+
+    public static Color getBlockColor(ColoredBlock block) {
+        if (block == null) {
             return null;
         }
 
-        Object type = block.getType();
+        Type type = block.type;
 
         Color color = null;
         if (type == Type.RED)
@@ -36,8 +54,10 @@ public class ColoredBlock extends Block {
     }
 
     public String toString() {
-        String typeStr = "";
+        String typeStr = null;
 
+        if (type == Type.NONE)
+            typeStr = "0";
         if (type == Type.RED)
             typeStr = "1";
         else if (type == Type.BLUE)
@@ -55,7 +75,7 @@ public class ColoredBlock extends Block {
     }
 
     public static ColoredBlock fromString(String typeStr) {
-        Type type = null;
+        Type type = Type.NONE;
 
         if (typeStr.equals("1"))
             type = Type.RED;

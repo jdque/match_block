@@ -9,11 +9,11 @@ import com.matchblock.engine.ColoredBlock;
 import com.matchblock.engine.Grid;
 
 public class GridActor extends Actor {
-    private final Grid grid;
+    private final Grid<ColoredBlock> grid;
     private ShapeRenderer shapeRenderer;
     private float cellWidth, cellHeight;
 
-    public GridActor(Grid grid, ShapeRenderer shapeRenderer) {
+    public GridActor(Grid<ColoredBlock> grid, ShapeRenderer shapeRenderer) {
         this.grid = grid;
         this.shapeRenderer = shapeRenderer;
     }

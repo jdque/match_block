@@ -4,21 +4,21 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
 
-public class CellAreaRef {
-    private Grid grid;
+public class CellAreaRef<T extends Block> {
+    private Grid<T> grid;
     private Rectangle rect;
 
-    public CellAreaRef(Grid grid, Rectangle rect) {
+    public CellAreaRef(Grid<T> grid, Rectangle rect) {
         this.grid = grid;
         this.rect = rect;
     }
 
-    public CellAreaRef(Grid grid, int x, int y, int width, int height) {
+    public CellAreaRef(Grid<T> grid, int x, int y, int width, int height) {
         this(grid, new Rectangle(x, y, width, height));
     }
 
-    public ArrayList<Block> getTargets() {
-        ArrayList blocks = new ArrayList<Block>();
+    public ArrayList<T> getTargets() {
+        ArrayList<T> blocks = new ArrayList<>();
         for (int y = (int)rect.y; y < (int)(rect.y + rect.height); y++) {
             for (int x = (int)rect.x; x < (int)(rect.x + rect.width); x++) {
                 blocks.add(grid.getBlock(x, y));
@@ -27,7 +27,7 @@ public class CellAreaRef {
         return blocks;
     }
 
-    public Grid getTargetsAsGrid() {
+    public Grid<T> getTargetsAsGrid() {
         return grid.getSubGrid((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
     }
 

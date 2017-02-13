@@ -36,20 +36,17 @@ public class ColoredBlock extends Block {
         }
 
         Type type = block.type;
-
         Color color = null;
-        if (type == Type.RED)
-            color = Color.RED;
-        else if (type == Type.BLUE)
-            color = Color.BLUE;
-        else if (type == Type.GREEN)
-            color = Color.GREEN;
-        else if (type == Type.PURPLE)
-            color = Color.PURPLE;
-        else if (type == Type.ORANGE)
-            color = Color.ORANGE;
-        else if (type == Type.MAGENTA)
-            color = Color.MAGENTA;
+
+        switch (type) {
+            case NONE:    color = null;          break;
+            case RED:     color = Color.RED;     break;
+            case BLUE:    color = Color.BLUE;    break;
+            case GREEN:   color = Color.GREEN;   break;
+            case PURPLE:  color = Color.PURPLE;  break;
+            case ORANGE:  color = Color.ORANGE;  break;
+            case MAGENTA: color = Color.MAGENTA; break;
+        }
 
         return color;
     }
@@ -57,39 +54,31 @@ public class ColoredBlock extends Block {
     public String toString() {
         String typeStr = null;
 
-        if (type == Type.NONE)
-            typeStr = "0";
-        if (type == Type.RED)
-            typeStr = "1";
-        else if (type == Type.BLUE)
-            typeStr = "2";
-        else if (type == Type.GREEN)
-            typeStr = "3";
-        else if (type == Type.PURPLE)
-            typeStr = "4";
-        else if (type == Type.ORANGE)
-            typeStr = "5";
-        else if (type == Type.MAGENTA)
-            typeStr = "6";
+        switch (type) {
+            case NONE:    typeStr = "0"; break;
+            case RED:     typeStr = "1"; break;
+            case BLUE:    typeStr = "2"; break;
+            case GREEN:   typeStr = "3"; break;
+            case PURPLE:  typeStr = "4"; break;
+            case ORANGE:  typeStr = "5"; break;
+            case MAGENTA: typeStr = "6"; break;
+        }
 
         return typeStr;
     }
 
     public static ColoredBlock fromString(String typeStr) {
-        Type type = Type.NONE;
+        Type type = null;
 
-        if (typeStr.equals("1"))
-            type = Type.RED;
-        else if (typeStr.equals("2"))
-            type = Type.BLUE;
-        else if (typeStr.equals("3"))
-            type = Type.GREEN;
-        else if (typeStr.equals("4"))
-            type = Type.PURPLE;
-        else if (typeStr.equals("5"))
-            type = Type.ORANGE;
-        else if (typeStr.equals("6"))
-            type = Type.MAGENTA;
+        switch (typeStr) {
+            case "0": type = Type.NONE;    break;
+            case "1": type = Type.RED;     break;
+            case "2": type = Type.BLUE;    break;
+            case "3": type = Type.GREEN;   break;
+            case "4": type = Type.PURPLE;  break;
+            case "5": type = Type.ORANGE;  break;
+            case "6": type = Type.MAGENTA; break;
+        }
 
         return new ColoredBlock(type);
     }

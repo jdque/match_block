@@ -28,6 +28,7 @@ import com.matchblock.actors.BlockActor;
 import com.matchblock.actors.PieceActor;
 import com.matchblock.actors.GridActor;
 import com.matchblock.engine.*;
+import com.matchblock.engine.Piece;
 import com.matchblock.ui.MenuScreen;
 import com.matchblock.ui.GameOverGroup;
 

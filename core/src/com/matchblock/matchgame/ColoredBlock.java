@@ -1,6 +1,7 @@
-package com.matchblock.engine;
+package com.matchblock.matchgame;
 
 import com.badlogic.gdx.graphics.Color;
+import com.matchblock.engine.Block;
 
 public class ColoredBlock extends Block {
     public enum Type {

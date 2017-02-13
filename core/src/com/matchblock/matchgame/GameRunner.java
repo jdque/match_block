@@ -2,9 +2,9 @@ package com.matchblock.matchgame;
 
 import com.badlogic.gdx.math.Vector2;
 import com.matchblock.engine.*;
+import com.matchblock.engine.Piece;
 import com.matchblock.engine.Point;
 
-import java.awt.*;
 import java.util.List;
 
 public class GameRunner {
@@ -206,7 +206,7 @@ public class GameRunner {
     }
 
     private void generateGroups() {
-        Piece.Generator gen = new Piece.Generator(0.1f, 0.35f, 0.35f, 0.2f);
+        PieceGenerator gen = new PieceGenerator(0.1f, 0.35f, 0.35f, 0.2f);
 
         if (nextPiece == null) {
             activePiece = gen.generate();

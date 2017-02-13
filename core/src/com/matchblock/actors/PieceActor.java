@@ -1,8 +1,8 @@
 package com.matchblock.actors;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.matchblock.engine.ColoredBlock;
-import com.matchblock.matchgame.Piece;
+import com.matchblock.matchgame.ColoredBlock;
+import com.matchblock.engine.Piece;
 
 public class PieceActor extends GridActor {
     public final Piece<ColoredBlock> piece;

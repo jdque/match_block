@@ -2,8 +2,7 @@ package com.matchblock.matchgame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.matchblock.engine.ColoredBlock;
-import com.matchblock.engine.Grid;
+import com.matchblock.engine.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;

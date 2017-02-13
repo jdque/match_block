@@ -4,8 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.matchblock.engine.Block;
-import com.matchblock.engine.ColoredBlock;
+import com.matchblock.matchgame.ColoredBlock;
 import com.matchblock.engine.Grid;
 
 public class GridActor extends Actor {

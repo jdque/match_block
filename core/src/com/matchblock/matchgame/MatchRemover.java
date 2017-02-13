@@ -1,7 +1,6 @@
 package com.matchblock.matchgame;
 
 import com.matchblock.engine.Block;
-import com.matchblock.engine.ColoredBlock;
 import com.matchblock.engine.Grid;
 import com.matchblock.engine.Point;
 

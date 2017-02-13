@@ -10,8 +10,12 @@ public class Point {
     }
 
     @Override
-    public boolean equals(Object point) {
-        return x == ((Point)point).x && y == ((Point)point).y;
+    public boolean equals(Object o) {
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        Point pt = (Point) o;
+        return x == pt.x && y == pt.y;
     }
 
     @Override

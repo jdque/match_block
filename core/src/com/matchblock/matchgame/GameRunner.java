@@ -1,5 +1,6 @@
 package com.matchblock.matchgame;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.matchblock.engine.*;
 
@@ -110,10 +111,10 @@ public class GameRunner {
         public void update(float delta) {
             clearDelay.step(delta);
             if (clearDelay.ready()) {
-                List<List<Point>> groups = MatchRemover.getTypeGroups(grid, 4);
+                List<List<GridPoint2>> groups = MatchRemover.getTypeGroups(grid, 4);
                 if (groups.size() > 0) {
-                    for (List<Point> group : groups) {
-                        for (Point point : group) {
+                    for (List<GridPoint2> group : groups) {
+                        for (GridPoint2 point : group) {
                             CellRef<ColoredBlock> ref = new CellRef<>(grid, point.x, point.y);
                             eventHandler.onBlockClear(ref);
                         }

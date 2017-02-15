@@ -1,6 +1,6 @@
 package com.matchblock.matchgame;
 
-import com.matchblock.engine.Point;
+import com.badlogic.gdx.math.GridPoint2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class Logic {
             this.chainMultiplier = chainMultiplier;
         }
 
-        public void scoreGroups(List<List<Point>> groups, int currentChain) {
+        public void scoreGroups(List<List<GridPoint2>> groups, int currentChain) {
             if (groups.size() == 0)
                 return;
 

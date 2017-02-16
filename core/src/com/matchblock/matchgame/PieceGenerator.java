@@ -1,45 +1,34 @@
 package com.matchblock.matchgame;
 
+import com.badlogic.gdx.math.CumulativeDistribution;
 import com.matchblock.engine.Piece;
 
 import java.util.Random;
 
 public class PieceGenerator {
-    private float[] freqs;
+    private CumulativeDistribution<Integer> typeCountDist;
 
     public PieceGenerator(float one, float two, float three, float four) {
-        freqs = new float[4];
-        setFreqs(one, two, three, four);
+        CumulativeDistribution<Integer> typeCountDist = new CumulativeDistribution<>();
+        typeCountDist.add(1, one);
+        typeCountDist.add(2, two);
+        typeCountDist.add(3, three);
+        typeCountDist.add(4, four);
+        typeCountDist.generate();
+        this.typeCountDist = typeCountDist;
     }
 
-    public void setFreqs(float one, float two, float three, float four) {
-        freqs[0] = one;
-        freqs[1] = one + two;
-        freqs[2] = one + two + three;
-        freqs[3] = one + two + three + four;
+    public void setTypeCountDist(CumulativeDistribution<Integer> typeCountDist) {
+        this.typeCountDist = typeCountDist;
     }
 
     public Piece<ColoredBlock> generate() {
         //Get type count from frequency distribution
         Random rand = new Random();
-        float typeCountFreq = rand.nextFloat();
-        int typeCount = 1;
-        for (int i = 0; i < freqs.length; i++) {
-            if (freqs[i] >= typeCountFreq) {
-                typeCount = i + 1;
-                break;
-            }
-        }
+        int typeCount = typeCountDist.value(rand.nextFloat());
 
         //Randomize block types
-        ColoredBlock.Type[] blockTypes = new ColoredBlock.Type[] {
-                ColoredBlock.Type.RED,
-                ColoredBlock.Type.BLUE,
-                ColoredBlock.Type.GREEN,
-                ColoredBlock.Type.PURPLE,
-                ColoredBlock.Type.ORANGE,
-                ColoredBlock.Type.MAGENTA
-        };
+        ColoredBlock.Type[] blockTypes = ColoredBlock.Type.values();
         for (int i = blockTypes.length - 1; i > 0; i--) {
             int j = rand.nextInt(i+1);
             ColoredBlock.Type temp = blockTypes[j];

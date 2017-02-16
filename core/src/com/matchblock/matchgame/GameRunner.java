@@ -205,7 +205,7 @@ public class GameRunner {
     }
 
     private void generateGroups() {
-        PieceGenerator gen = new PieceGenerator(0.1f, 0.35f, 0.25f, 0.2f);
+        PieceGenerator gen = new PieceGenerator(0.1f, 0.35f, 0.25f, 0.3f);
 
         if (nextPiece == null) {
             activePiece = gen.generate();

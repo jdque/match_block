@@ -3,7 +3,7 @@ package com.matchblock.matchgame;
 import com.badlogic.gdx.math.CumulativeDistribution;
 import com.matchblock.engine.Piece;
 
-import java.util.Random;
+import java.util.*;
 
 public class PieceGenerator {
     private CumulativeDistribution<Integer> typeCountDist;
@@ -28,36 +28,27 @@ public class PieceGenerator {
         int typeCount = typeCountDist.value(rand.nextFloat());
 
         //Randomize block types
-        ColoredBlock.Type[] blockTypes = ColoredBlock.Type.values();
-        for (int i = blockTypes.length - 1; i > 0; i--) {
-            int j = rand.nextInt(i+1);
-            ColoredBlock.Type temp = blockTypes[j];
-            blockTypes[j] = blockTypes[i];
-            blockTypes[i] = temp;
-        }
+        List<ColoredBlock.Type> blockTypes = new ArrayList<>(Arrays.asList(ColoredBlock.Type.values()));
+        blockTypes.remove(ColoredBlock.Type.NONE);
+        Collections.shuffle(blockTypes);
 
         //Randomize block type positioning
-        ColoredBlock[] blocks = new ColoredBlock[4];
+        List<ColoredBlock> blocks = new ArrayList<>();
         int typeCounter = 1;
         for (int i = 0; i < 4; i++) {
-            blocks[i] = new ColoredBlock(blockTypes[typeCounter - 1]);
+            blocks.add(new ColoredBlock(blockTypes.get(typeCounter - 1)));
             if (typeCounter < typeCount) {
                 typeCounter++;
             }
         }
-        for (int i = 3; i > 0; i--) {
-            int j = rand.nextInt(i+1);
-            ColoredBlock temp = blocks[j];
-            blocks[j] = blocks[i];
-            blocks[i] = temp;
-        }
+        Collections.shuffle(blocks);
 
-        Piece<ColoredBlock> group = new Piece<>(2, new ColoredBlock(ColoredBlock.Type.NONE));
-        group.setBlock(blocks[0], 0, 0);
-        group.setBlock(blocks[1], 0, 1);
-        group.setBlock(blocks[2], 1, 0);
-        group.setBlock(blocks[3], 1, 1);
+        Piece<ColoredBlock> piece = new Piece<>(2, new ColoredBlock(ColoredBlock.Type.NONE));
+        piece.setBlock(blocks.get(0), 0, 0);
+        piece.setBlock(blocks.get(1), 0, 1);
+        piece.setBlock(blocks.get(2), 1, 0);
+        piece.setBlock(blocks.get(3), 1, 1);
 
-        return group;
+        return piece;
     }
 }

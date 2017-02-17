@@ -1,20 +1,24 @@
 package com.matchblock.actors;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.matchblock.matchgame.ColoredBlock;
 import com.matchblock.engine.Grid;
 
+import java.util.Map;
+
 public class GridActor extends Actor {
     private final Grid<ColoredBlock> grid;
-    private ShapeRenderer shapeRenderer;
+    private final Map<ColoredBlock.Type, Texture> textureMap;
     private float cellWidth, cellHeight;
 
-    public GridActor(Grid<ColoredBlock> grid, ShapeRenderer shapeRenderer) {
+    public GridActor(Grid<ColoredBlock> grid, Map<ColoredBlock.Type, Texture> textureMap) {
         this.grid = grid;
-        this.shapeRenderer = shapeRenderer;
+        this.textureMap = textureMap;
+
+        setColor(Color.WHITE);
     }
 
     @Override
@@ -24,25 +28,19 @@ public class GridActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        //batch.end();
+        Color color = getColor();
+        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         for (int iy = 0; iy < grid.height; iy++) {
             for (int ix = 0; ix < grid.width; ix++) {
-                Color color = ColoredBlock.getBlockColor(grid.getBlock(ix, iy));
-                if (color != null) {
-                    float drawX = toStageX(ix);
-                    float drawY = toStageY(iy);
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.setColor(color);
-                    shapeRenderer.rect(drawX, drawY, cellWidth, cellHeight);
-                    shapeRenderer.end();
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-                    shapeRenderer.setColor(Color.WHITE);
-                    shapeRenderer.rect(drawX, drawY, cellWidth, cellHeight);
-                    shapeRenderer.end();
+                float drawX = toStageX(ix);
+                float drawY = toStageY(iy);
+                Texture texture = textureMap.get(grid.getBlock(ix, iy).type);
+                if (texture != null) {
+                    batch.draw(texture, drawX, drawY, cellWidth, cellHeight);
                 }
             }
         }
-        //batch.begin();
+        batch.setColor(Color.WHITE);
     }
 
     @Override

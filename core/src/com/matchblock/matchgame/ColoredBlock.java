@@ -8,7 +8,7 @@ public class ColoredBlock extends Block {
         NONE, RED, BLUE, GREEN, PURPLE, ORANGE, MAGENTA
     }
 
-    private final Type type;
+    public final Type type;
 
     public ColoredBlock(Type type) {
         this.type = type;

@@ -1,17 +1,20 @@
 package com.matchblock.actors;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.matchblock.matchgame.ColoredBlock;
 
 public class BlockActor extends Actor {
     public final ColoredBlock block;
-    private ShapeRenderer shapeRenderer;
+    private Texture texture;
 
-    public BlockActor(ColoredBlock block, ShapeRenderer shapeRenderer) {
+    public BlockActor(ColoredBlock block, Texture texture) {
         this.block = block.clone();
-        this.shapeRenderer = shapeRenderer;
+        this.texture = texture;
+
+        setColor(Color.WHITE);
     }
 
     @Override
@@ -21,20 +24,9 @@ public class BlockActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        //batch.end();
-        float worldX = this.getX();
-        float worldY = this.getY();
-        float worldWidth = this.getWidth();
-        float worldHeight = this.getHeight();
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(getColor());
-        shapeRenderer.rect(worldX, worldY, worldWidth, worldHeight);
-        shapeRenderer.end();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(255, 255, 255, getColor().a);
-        shapeRenderer.rect(worldX, worldY, worldWidth, worldHeight);
-        shapeRenderer.end();
-        //batch.begin();
+        Color color = getColor();
+        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+        batch.setColor(Color.WHITE);
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -30,6 +31,9 @@ import com.matchblock.actors.GridActor;
 import com.matchblock.engine.*;
 import com.matchblock.ui.MenuScreen;
 import com.matchblock.ui.GameOverGroup;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameScreen implements Screen {
     public enum RunState {
@@ -194,8 +198,10 @@ public class GameScreen implements Screen {
 
         try {
             Grid<ColoredBlock> grid = new Grid<>(10, 15, new ColoredBlock(ColoredBlock.Type.NONE));
+
             Logic.Score scoreLogic = new Logic.Score();
             scoreLogic.configure(4, 10, 5, 20, 2.0f);
+
             Logic.Speed speedLogic = new Logic.Speed();
             speedLogic.addSpeed(1.00f, 0);
             speedLogic.addSpeed(0.75f, 5);
@@ -269,6 +275,7 @@ public class GameScreen implements Screen {
         private PieceActor activePieceActor;
         private PieceActor nextPieceActor;
         private ActionManager actionManager;
+        private Map<ColoredBlock.Type, Texture> blockTextureMap;
 
         private static class ActionManager {
             private Actor actor;
@@ -294,6 +301,14 @@ public class GameScreen implements Screen {
 
             this.shapeRenderer = new ShapeRenderer();
             this.actionManager = new ActionManager(this);
+
+            this.blockTextureMap = new HashMap<>();
+            blockTextureMap.put(ColoredBlock.Type.RED, new Texture(Gdx.files.internal("element_red_square.png")));
+            blockTextureMap.put(ColoredBlock.Type.BLUE, new Texture(Gdx.files.internal("element_blue_square.png")));
+            blockTextureMap.put(ColoredBlock.Type.GREEN, new Texture(Gdx.files.internal("element_green_square.png")));
+            blockTextureMap.put(ColoredBlock.Type.ORANGE, new Texture(Gdx.files.internal("element_yellow_square.png")));
+            blockTextureMap.put(ColoredBlock.Type.PURPLE, new Texture(Gdx.files.internal("element_purple_square.png")));
+            blockTextureMap.put(ColoredBlock.Type.MAGENTA, new Texture(Gdx.files.internal("element_grey_square.png")));
         }
 
         @Override
@@ -303,17 +318,17 @@ public class GameScreen implements Screen {
 
         @Override
         public void draw(Batch batch, float parentAlpha) {
-            batch.end();
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            //batch.end();
+            //Gdx.gl.glEnable(GL20.GL_BLEND);
+            //Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
             if (gridActor != null) {
-                drawGridBackground();
+                drawGridBackground(batch, parentAlpha);
             }
             super.draw(batch, parentAlpha);
 
-            Gdx.gl.glDisable(GL20.GL_BLEND);
-            batch.begin();
+            //Gdx.gl.glDisable(GL20.GL_BLEND);
+            //batch.begin();
         }
 
         public void setGameRunner(GameRunner gameRunner) {
@@ -364,10 +379,9 @@ public class GameScreen implements Screen {
                     float cellWidth = gridActor.getCellWidth();
                     float cellHeight = gridActor.getCellHeight();
 
-                    final BlockActor blockActor = new BlockActor(ref.getTarget(), shapeRenderer);
+                    final BlockActor blockActor = new BlockActor(ref.getTarget(), blockTextureMap.get(ref.getTarget().type));
                     blockActor.setSize(cellWidth, cellHeight);
                     blockActor.setPosition(gridActor.toStageX(ref.x()), gridActor.toStageY(ref.y()));
-                    blockActor.setColor(ColoredBlock.getBlockColor(ref.getTarget()));
                     addActor(blockActor);
 
                     ref.clearTarget();
@@ -394,10 +408,10 @@ public class GameScreen implements Screen {
                     final int y0 = fromRef.y();
                     final int x1 = toRef.x();
                     final int y1 = toRef.y();
-                    final BlockActor blockActor = new BlockActor(fromRef.getTarget(), shapeRenderer);
+                    final ColoredBlock block = fromRef.getTarget();
+                    final BlockActor blockActor = new BlockActor(fromRef.getTarget(), blockTextureMap.get(block.type));
                     blockActor.setSize(cellWidth, cellHeight);
                     blockActor.setPosition(gridActor.toStageX(x0), gridActor.toStageY(y0));
-                    blockActor.setColor(ColoredBlock.getBlockColor(fromRef.getTarget()));
                     addActor(blockActor);
 
                     fromRef.clearTarget();
@@ -410,7 +424,7 @@ public class GameScreen implements Screen {
                                 @Override
                                 public void run() {
                                     removeActor(blockActor);
-                                    toRef.setTarget(blockActor.block);
+                                    toRef.setTarget(block);
                                 }
                             })
                     );
@@ -431,7 +445,7 @@ public class GameScreen implements Screen {
                 this.removeActor(gridActor);
             }
 
-            gridActor = new GridActor(grid, shapeRenderer);
+            gridActor = new GridActor(grid, blockTextureMap);
             gridActor.setPosition(20, 20);
             gridActor.setSize(getWidth() - 40, (float)((getWidth() - 40) * 1.5));
             this.addActor(gridActor);
@@ -450,7 +464,7 @@ public class GameScreen implements Screen {
             float cellWidth = gridActor.getCellWidth();
             float cellHeight = gridActor.getCellHeight();
 
-            activePieceActor = new PieceActor(piece, shapeRenderer);
+            activePieceActor = new PieceActor(piece, blockTextureMap);
             activePieceActor.setSize(cellWidth * 2, cellHeight * 2);
             float x = gridActor.getX() + activePieceActor.piece.gridX * cellWidth;
             float y = (gridActor.getY() + gridActor.getHeight()) - activePieceActor.getHeight() - (activePieceActor.piece.gridY * cellHeight);
@@ -469,14 +483,16 @@ public class GameScreen implements Screen {
                 return;
             }
 
-            nextPieceActor = new PieceActor(piece, shapeRenderer);
+            nextPieceActor = new PieceActor(piece, blockTextureMap);
             nextPieceActor.setSize(80, 80);
             nextPieceActor.setPosition(this.getWidth() - nextPieceActor.getWidth() - 20, this.getHeight() - nextPieceActor.getHeight() - 15);
             this.addActor(nextPieceActor);
             nextPieceActor.toFront();
         }
 
-        private void drawGridBackground () {
+        private void drawGridBackground (Batch batch, float parentAlpha) {
+            batch.end();
+
             float worldX = gridActor.getX();
             float worldY = gridActor.getY();
             float worldWidth = gridActor.getWidth();
@@ -484,18 +500,23 @@ public class GameScreen implements Screen {
             float cellWidth = gridActor.getCellWidth();
             float cellHeight = gridActor.getCellHeight();
 
+            //background
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.BLACK);
             shapeRenderer.rect(worldX, worldY, worldWidth, worldHeight);
             shapeRenderer.end();
+            //top row
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.GRAY);
             shapeRenderer.rect(worldX, worldY + worldHeight - cellHeight, worldWidth, cellHeight);
             shapeRenderer.end();
+            //border
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.WHITE);
             shapeRenderer.rect(worldX, worldY, worldWidth, worldHeight);
             shapeRenderer.end();
+
+            batch.begin();
         }
     }
 

@@ -29,6 +29,7 @@ import com.matchblock.actors.BlockActor;
 import com.matchblock.actors.PieceActor;
 import com.matchblock.actors.GridActor;
 import com.matchblock.engine.*;
+import com.matchblock.engine.state.Transition;
 import com.matchblock.ui.MenuScreen;
 import com.matchblock.ui.GameOverGroup;
 
@@ -334,9 +335,9 @@ public class GameScreen implements Screen {
         public void setGameRunner(GameRunner gameRunner) {
             this.gameRunner = gameRunner;
 
-            this.gameRunner.setTransitionHandler(new State.TransitionHandler() {
+            this.gameRunner.setTransitionHandler(new Transition.Handler() {
                 @Override
-                public void update(State.Transition transition) {
+                public void update(Transition transition) {
                     if (!actionManager.hasBlockingActions()) {
                         transition.proceed();
                     }

@@ -3,6 +3,9 @@ package com.matchblock.matchgame;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.matchblock.engine.*;
+import com.matchblock.engine.state.State;
+import com.matchblock.engine.state.StateMachine;
+import com.matchblock.engine.state.Transition;
 
 import java.util.List;
 
@@ -37,8 +40,8 @@ public class GameRunner {
         REMOVING_CLEAR
     };
 
-    private State.Context stateContext;
-    private State.TransitionHandler transitionHandler;
+    private StateMachine stateContext;
+    private Transition.Handler transitionHandler;
 
     private EventHandler eventHandler;
 
@@ -181,8 +184,9 @@ public class GameRunner {
         this.scoreLogic = scoreLogic;
         this.speedLogic = speedLogic;
         this.eventHandler = new DefaultEventHandler();
+        this.transitionHandler = new Transition.ImmediateHandler();
 
-        this.stateContext = new State.Context();
+        this.stateContext = new StateMachine();
         this.stateContext.add(GameState.DROPPING, new DroppingState());
         this.stateContext.add(GameState.REMOVING_CLEAR, new ClearMatchesState());
         this.stateContext.add(GameState.REMOVING_SHIFT, new ShiftBlocksState());
@@ -198,7 +202,7 @@ public class GameRunner {
         this.eventHandler = eventHandler;
     }
 
-    public void setTransitionHandler(State.TransitionHandler transitionHandler) {
+    public void setTransitionHandler(Transition.Handler transitionHandler) {
         this.transitionHandler = transitionHandler;
     }
 

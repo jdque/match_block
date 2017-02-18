@@ -7,13 +7,26 @@ import com.matchblock.engine.*;
 import java.util.List;
 
 public class GameRunner {
-    public abstract static class EventHandler {
-        void onActivePieceSpawned(Piece<ColoredBlock> activePiece) {}
-        void onNextPieceSpawned(Piece<ColoredBlock> nextPiece) {}
-        void onActivePieceRemoved() {}
-        void onActivePieceMove(Piece<ColoredBlock> activePiece, int dx, int dy, float speedMul) {}
-        void onBlockClear(CellRef<ColoredBlock> ref) {}
-        void onBlockMove(CellRef<ColoredBlock> fromRef, CellRef<ColoredBlock> toRef, float speedMul) {}
+    public interface EventHandler {
+        void onActivePieceSpawned(Piece<ColoredBlock> activePiece);
+        void onNextPieceSpawned(Piece<ColoredBlock> nextPiece);
+        void onActivePieceRemoved();
+        void onActivePieceMove(Piece<ColoredBlock> activePiece, int dx, int dy, float speedMul);
+        void onBlockClear(CellRef<ColoredBlock> ref);
+        void onBlockMove(CellRef<ColoredBlock> fromRef, CellRef<ColoredBlock> toRef, float speedMul);
+    }
+
+    public static class DefaultEventHandler implements EventHandler {
+        public void onActivePieceSpawned(Piece<ColoredBlock> activePiece) {}
+        public void onNextPieceSpawned(Piece<ColoredBlock> nextPiece) {}
+        public void onActivePieceRemoved() {}
+        public void onActivePieceMove(Piece<ColoredBlock> activePiece, int dx, int dy, float speedMul) {}
+        public void onBlockClear(CellRef<ColoredBlock> ref) {
+            ref.clearTarget();
+        }
+        public void onBlockMove(CellRef<ColoredBlock> fromRef, CellRef<ColoredBlock> toRef, float speedMul) {
+            fromRef.moveTo(toRef.x(), toRef.y());
+        }
     }
 
     public enum GameState {
@@ -167,7 +180,7 @@ public class GameRunner {
         this.grid = grid;
         this.scoreLogic = scoreLogic;
         this.speedLogic = speedLogic;
-        this.eventHandler = new EventHandler() {};
+        this.eventHandler = new DefaultEventHandler();
 
         this.stateContext = new State.Context();
         this.stateContext.add(GameState.DROPPING, new DroppingState());

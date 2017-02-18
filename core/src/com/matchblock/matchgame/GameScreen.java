@@ -344,15 +344,15 @@ public class GameScreen implements Screen {
             });
 
             this.gameRunner.setEventHandler(new GameRunner.EventHandler() {
-                void onActivePieceSpawned(Piece<ColoredBlock> activePiece) {
+                public void onActivePieceSpawned(Piece<ColoredBlock> activePiece) {
                     setActivePiece(activePiece);
                 }
 
-                void onNextPieceSpawned(Piece<ColoredBlock> nextPiece) {
+                public void onNextPieceSpawned(Piece<ColoredBlock> nextPiece) {
                     setNextPiece(nextPiece);
                 }
 
-                void onActivePieceMove(Piece<ColoredBlock> activePiece, int dx, int dy, float speedMul) {
+                public void onActivePieceMove(Piece<ColoredBlock> activePiece, int dx, int dy, float speedMul) {
                     float cellWidth = gridActor.getCellWidth();
                     float cellHeight = gridActor.getCellHeight();
 
@@ -370,12 +370,12 @@ public class GameScreen implements Screen {
                     actionManager.addBlockingAction(moveAction);
                 }
 
-                void onActivePieceRemoved() {
+                public void onActivePieceRemoved() {
                     activePieceActor.clear();
                     removeActor(activePieceActor);
                 }
 
-                void onBlockClear(final CellRef<ColoredBlock> ref) {
+                public void onBlockClear(final CellRef<ColoredBlock> ref) {
                     final BlockActor blockActor = gridActor.popOut(ref.x(), ref.y());
 
                     SequenceAction clearAction = Actions.sequence(
@@ -392,7 +392,7 @@ public class GameScreen implements Screen {
                     actionManager.addBlockingAction(clearAction);
                 }
 
-                void onBlockMove(final CellRef<ColoredBlock> fromRef, final CellRef<ColoredBlock> toRef, float speedMul) {
+                public void onBlockMove(final CellRef<ColoredBlock> fromRef, final CellRef<ColoredBlock> toRef, float speedMul) {
                     final int x0 = fromRef.x();
                     final int y0 = fromRef.y();
                     final int x1 = toRef.x();

@@ -376,22 +376,14 @@ public class GameScreen implements Screen {
                 }
 
                 void onBlockClear(final CellRef<ColoredBlock> ref) {
-                    float cellWidth = gridActor.getCellWidth();
-                    float cellHeight = gridActor.getCellHeight();
-
-                    final BlockActor blockActor = new BlockActor(ref.getTarget(), blockTextureMap.get(ref.getTarget().type));
-                    blockActor.setSize(cellWidth, cellHeight);
-                    blockActor.setPosition(gridActor.toStageX(ref.x()), gridActor.toStageY(ref.y()));
-                    addActor(blockActor);
-
-                    ref.clearTarget();
+                    final BlockActor blockActor = gridActor.popOut(ref.x(), ref.y());
 
                     SequenceAction clearAction = Actions.sequence(
                             Actions.alpha(0.0f, 0.15f),
                             Actions.run(new Runnable() {
                                 @Override
                                 public void run() {
-                                    removeActor(blockActor);
+                                    blockActor.remove();
                                 }
                             })
                     );
@@ -401,30 +393,19 @@ public class GameScreen implements Screen {
                 }
 
                 void onBlockMove(final CellRef<ColoredBlock> fromRef, final CellRef<ColoredBlock> toRef, float speedMul) {
-                    float cellWidth = gridActor.getCellWidth();
-                    float cellHeight = gridActor.getCellHeight();
-
                     final int x0 = fromRef.x();
                     final int y0 = fromRef.y();
                     final int x1 = toRef.x();
                     final int y1 = toRef.y();
-                    final ColoredBlock block = fromRef.getTarget();
-                    final BlockActor blockActor = new BlockActor(fromRef.getTarget(), blockTextureMap.get(block.type));
-                    blockActor.setSize(cellWidth, cellHeight);
-                    blockActor.setPosition(gridActor.toStageX(x0), gridActor.toStageY(y0));
-                    addActor(blockActor);
-
-                    fromRef.clearTarget();
+                    final BlockActor blockActor = gridActor.popOut(x0, y0);
 
                     float duration = Vector2.dst(x0, y0, x1, y1) * 0.025f * speedMul;
-
                     SequenceAction dropAction = Actions.sequence(
-                            Actions.moveTo(gridActor.toStageX(x1), gridActor.toStageY(y1), duration),
+                            Actions.moveTo(gridActor.toRelativeX(x1), gridActor.toRelativeY(y1), duration),
                             Actions.run(new Runnable() {
                                 @Override
                                 public void run() {
-                                    removeActor(blockActor);
-                                    toRef.setTarget(block);
+                                    gridActor.popIn(blockActor, x1, y1);
                                 }
                             })
                     );

@@ -24,6 +24,8 @@ public class BlockActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+
         Color color = getColor();
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());

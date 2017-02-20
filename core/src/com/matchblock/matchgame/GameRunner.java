@@ -15,6 +15,7 @@ public class GameRunner {
         void onNextPieceSpawned(Piece<ColoredBlock> nextPiece);
         void onActivePieceRemoved();
         void onActivePieceMove(Piece<ColoredBlock> activePiece, int dx, int dy, float speedMul);
+        void onActivePieceRotate();
         void onBlockClear(CellRef<ColoredBlock> ref);
         void onBlockMove(CellRef<ColoredBlock> fromRef, CellRef<ColoredBlock> toRef, float speedMul);
     }
@@ -24,6 +25,7 @@ public class GameRunner {
         public void onNextPieceSpawned(Piece<ColoredBlock> nextPiece) {}
         public void onActivePieceRemoved() {}
         public void onActivePieceMove(Piece<ColoredBlock> activePiece, int dx, int dy, float speedMul) {}
+        public void onActivePieceRotate() {}
         public void onBlockClear(CellRef<ColoredBlock> ref) {
             ref.clearTarget();
         }
@@ -263,6 +265,7 @@ public class GameRunner {
             return;
 
         activePiece.rotateRight();
+        eventHandler.onActivePieceRotate();
     }
 
     public void dropFast() {

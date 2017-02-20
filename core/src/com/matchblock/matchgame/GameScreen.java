@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -276,7 +277,7 @@ public class GameScreen implements Screen {
         private PieceActor activePieceActor;
         private PieceActor nextPieceActor;
         private ActionManager actionManager;
-        private Map<ColoredBlock.Type, Texture> blockTextureMap;
+        private Map<ColoredBlock.Type, TextureRegion> blockTextureMap;
 
         private static class ActionManager {
             private Actor actor;
@@ -304,12 +305,12 @@ public class GameScreen implements Screen {
             this.actionManager = new ActionManager(this);
 
             this.blockTextureMap = new HashMap<>();
-            blockTextureMap.put(ColoredBlock.Type.RED, new Texture(Gdx.files.internal("element_red_square.png")));
-            blockTextureMap.put(ColoredBlock.Type.BLUE, new Texture(Gdx.files.internal("element_blue_square.png")));
-            blockTextureMap.put(ColoredBlock.Type.GREEN, new Texture(Gdx.files.internal("element_green_square.png")));
-            blockTextureMap.put(ColoredBlock.Type.ORANGE, new Texture(Gdx.files.internal("element_yellow_square.png")));
-            blockTextureMap.put(ColoredBlock.Type.PURPLE, new Texture(Gdx.files.internal("element_purple_square.png")));
-            blockTextureMap.put(ColoredBlock.Type.MAGENTA, new Texture(Gdx.files.internal("element_grey_square.png")));
+            blockTextureMap.put(ColoredBlock.Type.RED, new TextureRegion(new Texture(Gdx.files.internal("element_red_square.png"))));
+            blockTextureMap.put(ColoredBlock.Type.BLUE, new TextureRegion(new Texture(Gdx.files.internal("element_blue_square.png"))));
+            blockTextureMap.put(ColoredBlock.Type.GREEN, new TextureRegion(new Texture(Gdx.files.internal("element_green_square.png"))));
+            blockTextureMap.put(ColoredBlock.Type.ORANGE, new TextureRegion(new Texture(Gdx.files.internal("element_yellow_square.png"))));
+            blockTextureMap.put(ColoredBlock.Type.PURPLE, new TextureRegion(new Texture(Gdx.files.internal("element_purple_square.png"))));
+            blockTextureMap.put(ColoredBlock.Type.MAGENTA, new TextureRegion(new Texture(Gdx.files.internal("element_grey_square.png"))));
         }
 
         @Override
@@ -359,21 +360,21 @@ public class GameScreen implements Screen {
 
                     float duration = Vector2.len(dx, dy) * 0.025f * speedMul;
 
-                    SequenceAction moveAction = Actions.sequence(
-                            Actions.moveBy(dx * cellWidth, -dy * cellHeight, duration),
-                            Actions.run(new Runnable() {
-                                public void run() {
-                                }
-                            })
-                    );
+                    Action moveAction = Actions.moveBy(dx * cellWidth, -dy * cellHeight, duration);
                     moveAction.setActor(activePieceActor);
-
-                    actionManager.addBlockingAction(moveAction);
+                    activePieceActor.addAction(moveAction);
                 }
 
                 public void onActivePieceRemoved() {
                     activePieceActor.clear();
                     removeActor(activePieceActor);
+                }
+
+                public void onActivePieceRotate() {
+                    activePieceActor.rotateBy(90f);
+                    Action rotateAction = Actions.rotateBy(-90f, 0.15f);
+                    rotateAction.setActor(activePieceActor);
+                    activePieceActor.addAction(rotateAction);
                 }
 
                 public void onBlockClear(final CellRef<ColoredBlock> ref) {
@@ -448,6 +449,7 @@ public class GameScreen implements Screen {
 
             activePieceActor = new PieceActor(piece, blockTextureMap);
             activePieceActor.setSize(cellWidth * 2, cellHeight * 2);
+            activePieceActor.setOrigin(Align.center);
             float x = gridActor.getX() + activePieceActor.piece.gridX * cellWidth;
             float y = (gridActor.getY() + gridActor.getHeight()) - activePieceActor.getHeight() - (activePieceActor.piece.gridY * cellHeight);
             activePieceActor.setPosition(x, y);

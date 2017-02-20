@@ -1,8 +1,8 @@
 package com.matchblock.actors;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.matchblock.matchgame.ColoredBlock;
 import com.matchblock.engine.Grid;
@@ -11,10 +11,10 @@ import java.util.Map;
 
 public class GridActor extends Group {
     private final Grid<ColoredBlock> grid;
-    private final Map<ColoredBlock.Type, Texture> textureMap;
+    private final Map<ColoredBlock.Type, TextureRegion> textureMap;
     private float cellWidth, cellHeight;
 
-    public GridActor(Grid<ColoredBlock> grid, Map<ColoredBlock.Type, Texture> textureMap) {
+    public GridActor(Grid<ColoredBlock> grid, Map<ColoredBlock.Type, TextureRegion> textureMap) {
         this.grid = grid;
         this.textureMap = textureMap;
 
@@ -28,21 +28,26 @@ public class GridActor extends Group {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
-
         Color color = getColor();
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         for (int iy = 0; iy < grid.height; iy++) {
             for (int ix = 0; ix < grid.width; ix++) {
                 float drawX = getX() + toRelativeX(ix);
                 float drawY = getY() + toRelativeY(iy);
-                Texture texture = textureMap.get(grid.getBlock(ix, iy).type);
+                TextureRegion texture = textureMap.get(grid.getBlock(ix, iy).type);
                 if (texture != null) {
-                    batch.draw(texture, drawX, drawY, cellWidth, cellHeight);
+                    batch.draw(texture,
+                            drawX, drawY,
+                            getX() - drawX + getOriginX(), getY() - drawY + getOriginY(),
+                            cellWidth, cellHeight,
+                            getScaleX(), getScaleY(),
+                            getRotation());
                 }
             }
         }
         batch.setColor(Color.WHITE);
+
+        super.draw(batch, parentAlpha);
     }
 
     @Override
